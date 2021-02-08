@@ -1,4 +1,4 @@
-function MatR_K = build_stiffness20(wg,pg,MatR_matprop,T_X,T_E,T_DOF)
+function MatR_M = build_mass20(wg,pg,rho,T_X,T_E,T_DOF)
 
 % Shape functions are : A + B x + C y + D z + E xy + F xz + G yz + H xyz + ...
 %                       I x^2 + J y^2 + K z^2 + L yx^2 + M zx^2 + N xy^2 + O zy^2 + P xz^2 + Q yz^2 + R yzx^2 + S xzy^2 + T xyz^2 
@@ -38,16 +38,16 @@ for ee = 1:Ne
     vec_Xe_tmp = T_X(nX,:)' ;
     vec_Xe = vec_Xe_tmp(:) ;
             
-    MatR_Ke = compute_Ke_20(wg,pg,mat_coeffs,vec_Xe,MatR_matprop,MatR_P,MatR_G) ;
+    MatR_Me = compute_Me_20(wg,pg,mat_coeffs,vec_Xe,rho) ;
         
     V1((ee*Nddl_e*Nddl_e-(Nddl_e*Nddl_e-1)):(ee*Nddl_e*Nddl_e)) = T_DOF(ee,ind_I(:)) ;
     V2((ee*Nddl_e*Nddl_e-(Nddl_e*Nddl_e-1)):(ee*Nddl_e*Nddl_e)) = T_DOF(ee,ind_J(:)) ;
-    V3((ee*Nddl_e*Nddl_e-(Nddl_e*Nddl_e-1)):(ee*Nddl_e*Nddl_e)) = MatR_Ke(:) ;
+    V3((ee*Nddl_e*Nddl_e-(Nddl_e*Nddl_e-1)):(ee*Nddl_e*Nddl_e)) = MatR_Me(:) ;
         
 end
 
-MatR_K = sparse(V1,V2,V3) ;
+MatR_M = sparse(V1,V2,V3) ;
 
 % Symmetry of MatR_K is enforced
 
-MatR_K = 0.5*(MatR_K + MatR_K') ;
+MatR_M = 0.5*(MatR_M + MatR_M') ;
